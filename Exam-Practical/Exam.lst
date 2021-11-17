@@ -1,0 +1,78 @@
+
+as12, an absolute assembler for Motorola MCU's, version 1.2h
+
+                        ; Exam.asm
+                        ; Author:               Prince Adrianne Felix
+                        ; Student Number(s):    040933287
+                        ; Course:               CST8216 Winter 2021
+                        ; Date:                 April 21, 2021
+                        ;
+                        ; Purpose       The purpose of this program is to count those results that have Remainder = 0
+                        ;
+                        ;               TEST PLAN:
+                        ;                   1)Reserved a memory for the total count and Remainder
+                        ;                   2)Load Org and Stack Address
+                        ;                   3)Read All Array
+                        ;                   4)IF element/value is not "0", do the devision, else Keep Looping
+                        ;                   5)Store the remainder in Reserved Address
+                        ;                   6)Check if Equal to "0", increment if equal, else check if end of array
+                        ; --------------------------------------------------------------------------------------------------
+                        
+0000                    DIVISOR equ     $0      ;Divisor
+                        
+1000                            org     $1000   ;Array
+1000                    Array
+1000 b7 84 f5 fc 4c 8c  	db      183,132,245,252,76,140,182,0,14,154,168,56,22,0,28,238,42,238,184,196
+     b6 00 0e 9a a8 38
+     16 00 1c ee 2a ee
+     b8 c4
+1014                    EndArray
+                        
+1020                            org     $1020  ;Result of count
+1020                    Result  ds      1
+                        
+1030                            org     $1030   ;Remainder
+1030                    Rem     ds      1
+                        
+                        
+2000                            org     $2000
+2000 cf 20 00                   lds     #$2000
+                        
+2003 ce 10 00                   ldx     #Array   ;Load x with Array
+2006 d6 00                      ldab    $0       ;Load b with 0
+2008 7b 10 20                   stab    Result   ;Store b at Result address
+200b 7b 10 30           Loop    stab    Rem      ;Store b at Rem, so it always set Rem to 0
+200e a6 30              	ldaa    1,x+     ;Load a with first index in array, increment address at x
+2010 81 00                      cmpa    #$0      ;Check if 0
+2012 26 02                      bne     Divide   ;Branch to Divide if not equal
+2014 20 14                      bra     cEnd     ;Check the end array
+                        
+2016 cd 00 00           Divide  ldy     #DIVISOR ;Load y with the Divisor
+2019 18 10                      idiv             ;Do the Division
+201b 7a 10 30                   staa    Rem      ;Store the remainder
+201e f6 10 30                   ldab    Rem      ;Load b with Remainder
+2021 81 00                      cmpa    #$0      ;Check if eaul to 0
+2023 26 05                      bne     cEnd     ;If not equal check for the end array
+2025 72 10 20                   inc     Result   ;Icrement Result if there's no Remainder
+2028 20 00                      bra     cEnd     ;BRanch Always Check end
+                                
+202a 8e 10 14           cEnd    cpx     #EndArray ;Check the end of array
+202d 26 dc                      bne     Loop      ;Loop again if not end of array
+                                
+202f 3f                         swi
+                                end
+                                
+                        
+                        ;Special Notes
+                                ;Sorry, I wasn't able to do it right because it's going in an infinite loop.
+                        	;May you please Consider The following Code above
+                        	;I included my test plan above aswell, and coomments to see and visualize what's going on in the code
+                                
+                                ;It was a great Semester
+                                ;Thank you!
+                                
+                                
+
+Executed: Wed Apr 21 13:01:00 2021
+Total cycles: 74, Total bytes: 68
+Total errors: 0, Total warnings: 0
