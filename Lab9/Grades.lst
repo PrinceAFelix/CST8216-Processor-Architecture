@@ -1,0 +1,66 @@
+
+as12, an absolute assembler for Motorola MCU's, version 1.2h
+
+                        ;Grades.asm
+                        ;
+                        ;Author:                P.A. Felix
+                        ;Student Number:        040933287
+                        ;Date:                  16 Mar 2021
+                        ;
+                        ;Purpose:               Assign a letter grade to specific marks
+                        ;
+0050                    EIGHTY  equ     80      ;Grades For 80
+0046                    SEVENTY equ     70      ;Grades For 70
+003c                    SIXTY   equ     60      ;Grades For 60
+0032                    FIFTY   equ     50      ;Grades For 50
+                        
+1000                            org     $1000   ; Origin for Program Data
+1000                    Marks                   ;Staring address of Marks
+                        #include Marks.txt      ;Include the text file
+1000 50 4d 34 44        		db	80, 77, 52, 68
+1004 2d 22 5f 16        		db	45, 34, 95, 22
+1008 37 51 5a 5b        		db	55, 81, 90, 91
+100c 59 31 33 46        		db	89, 49, 51, 70
+                        #endinclude
+
+1010                    EndMarks                ;Ending address of Marks
+                        ; Expected Result
+                        ;               A B D C F F A F D A A A A F D B
+                        
+1020                            org     $1020           ;Starting address of letter grade
+1020                    Store   ds      EndMarks-Marks  ;Allocate memory for the letter grade
+                        
+2000                            org     $2000           ;Starting address of this program
+2000 cf 20 00                   lds     #$2000
+2003 ce 10 00                   ldx     #Marks          ;Pointer to the start of the array
+2006 cd 10 20                   ldy     #Store           ;Pointer to the allocated memory space
+2009 a6 30              Loop    ldaa    1,x+            ;Load a with the first element in the array, with post increment
+200b 81 50              Check80 cmpa    #EIGHTY         ;Compare a to 80
+200d 24 0e                      bhs     AssignA         ;If higher, Assign A
+200f 81 46              Check70 cmpa    #SEVENTY        ;Compare a to 70
+2011 24 0e                      bhs     AssignB         ;If higher, Assign B
+2013 81 3c              Check60 cmpa    #SIXTY          ;Compare a to 60
+2015 24 0e                      bhs     AssignC         ;If higher, Assign C
+2017 81 32              Fgrade  cmpa    #FIFTY          ;Compare a to 50
+2019 24 0e                      bhs     AssignD         ;If higher, Assign D
+201b 25 10                      blo     AssignF         ;If Lower, Assign F
+                                
+201d c6 41              AssignA ldab    #'A'            ;Label, for assigning A
+201f 20 0e                      bra     Next            ;Go to Label Next
+2021 c6 42              AssignB ldab    #'B'            ;Label, for assigning B
+2023 20 0a                      bra     Next            ;Go to Label Next
+2025 c6 43              AssignC ldab    #'C'            ;Label, for assigning C
+2027 20 06                      bra     Next            ;Go to Label Next
+2029 c6 44              AssignD ldab    #'D'            ;Label, for assigning D
+202b 20 02                      bra     Next            ;Go to Label Next
+202d c6 46              AssignF ldab    #'F'            ;Label, for assigning F
+                        
+202f 6b 70              Next    stab    1,y+            ;Store the letter grade to the alloctaed memory
+2031 8e 10 10                   cpx     #EndMarks       ;compare x, if the end of array
+2034 26 d3                      bne     Loop            ;No, loop again
+2036 3f                         swi                     ;Yes
+                                end
+
+Executed: Fri Mar 19 08:42:14 2021
+Total cycles: 70, Total bytes: 71
+Total errors: 0, Total warnings: 0
