@@ -1,0 +1,4 @@
+	db	'F, 'B, 'A, 'D, 'B
+	db	'A, 'B, 'C, 'A, 'C
+	db	'D, 'A, 'F
+	db	'A, 'F, 'D

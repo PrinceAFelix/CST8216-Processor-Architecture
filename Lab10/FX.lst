@@ -1,0 +1,45 @@
+
+as12, an absolute assembler for Motorola MCU's, version 1.2h
+
+                        ;FX.asm
+                        ;
+                        ;Author:                P.A. Felix
+                        ;Student Number:        040933287
+                        ;Date:                  25 Mar 2021
+                        ;
+                        ;Purpose:
+                        ;
+1010                            	org     $1010    				;Origin for Program Data
+1010 00 01 02 03 04 05  X_Values	db	$0, $1, $2, $3, $4, $5, $6, $7, $8, $9            ;Staring address of Marks
+     06 07 08 09
+101a                    EndXValues
+                        
+                                        						;Ending address of Marks
+                        ; Expected Result
+                        
+                         ;Equation: f(X) = 3x + 5
+                                        ;x = 0 to 9
+                         
+                        ;               $103A $103B $103C $103D $103E $103F
+                        ;                   5     3     2     3   N/A     3
+                        
+1020                            	org     $1020           			;Starting address of Tally
+1020                    Fx   		ds      EndXValues-X_Values  			;Free Memory for Tally
+                        
+2000                            	org     $2000           			;Starting address of this program
+2000 cf 20 00                   	lds     #$2000                                  ;Stack Location
+2003 ce 10 10                   	ldx     #X_Values      				;Pointer to Grades
+2006 cd 10 20                   	ldy     #Fx           				;Pointer to Store
+2009 a6 30              Loop    	ldaa    1,x+             			;Get a Grade
+200b c6 03                              ldab    #$3                                     ;Get the X values
+200d 12                 		mul	a,b                                     ;Multiply a to b
+200e cb 05                              addb    #$5                                     ;Add5 to b
+2010 6b 70                              stab    1,y+                                    ;Results Store here
+2012 8e 10 1a                   	cpx     #EndXValues      			;compare x to EndGrades
+2015 26 f2                      	bne     Loop             			;Not equal, go to Loop
+2017 3f                         	swi                      			;Yes
+                                	end
+
+Executed: Fri Mar 26 09:23:32 2021
+Total cycles: 35, Total bytes: 34
+Total errors: 0, Total warnings: 0

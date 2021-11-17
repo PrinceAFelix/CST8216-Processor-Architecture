@@ -1,0 +1,46 @@
+
+as12, an absolute assembler for Motorola MCU's, version 1.2h
+
+                        ;GradesII.asm
+                        ;
+                        ;Author:                P.A. Felix
+                        ;Student Number:        040933287
+                        ;Date:                  25 Mar 2021
+                        ;
+                        ;Purpose:               Count the number a Given marks Occur in the Array
+                        ;
+1020                            org     $1020    ;Origin for Program Data
+1020                    Grades                   ;Staring address of Marks
+                        #include Grades.txt      ;Include the text file
+1020 46 42 41 44 42     	db	'F, 'B, 'A, 'D, 'B
+1025 41 42 43 41 43     	db	'A, 'B, 'C, 'A, 'C
+102a 44 41 46           	db	'D, 'A, 'F
+102d 41 46 44           	db	'A, 'F, 'D
+                        #endinclude
+
+1030                    EndGrades                ;Ending address of Marks
+                        ; Expected Result
+                        
+                        ;               $103A $103B $103C $103D $103E $103F
+                        ;                   5     3     2     3   N/A     3
+                        
+1030                            org     $1030           ;Starting address of Tally
+1030                    Store   ds      EndGrades-Grades  ;Free Memory for Tally
+                        
+2000                            org     $2000           ;Starting address of this program
+2000 cf 20 00                   lds     #$2000
+2003 ce 10 20                   ldx     #Grades          ;Pointer to Grades
+2006 cd 10 30                   ldy     #Store           ;Pointer to Store
+2009 a6 30              Loop    ldaa    1,x+             ;Get a Grade
+200b c6 37                      ldab    #$37             ;Load B with 37
+200d 18 16              	sba                      ;Subtract B to A
+200f 62 ec              	inc     a,y              ;Increment a at memory address y
+2011 8e 10 30           	cpx     #EndGrades       ;compare x to EndGrades
+2014 26 f3                      bne     Loop             ;Not equal, go to Loop
+2016 3f                         swi                      ;Yes
+                                end
+                        
+
+Executed: Fri Mar 26 00:00:04 2021
+Total cycles: 33, Total bytes: 39
+Total errors: 0, Total warnings: 0
